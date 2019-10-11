@@ -1,4 +1,4 @@
-package com.droid2developers.frozenocr.custom;
+package com.droid2developers.frozenocr.controller;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

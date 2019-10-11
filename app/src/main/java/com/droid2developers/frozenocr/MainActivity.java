@@ -4,19 +4,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.droid2developers.frozenocr.activities.CameraActivity;
+import com.droid2developers.frozenocr.activities.LiveActivity;
 import com.droid2developers.frozenocr.activities.CropActivity;
+import com.droid2developers.frozenocr.activities.HistoryActivity;
+import com.droid2developers.frozenocr.controller.SQLiteHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 5;
     private ImageView optionsImage;
     private String imageFilePath;
+    private SQLiteHandler sqLiteHandler;
     private static final int CAPTURE_IMAGE_REQUEST = 10;
 
     @Override
@@ -43,12 +49,13 @@ public class MainActivity extends AppCompatActivity {
         CardView cameraButton = findViewById(R.id.cameraCardId);
         CardView storageButton = findViewById(R.id.storageCardId);
         CardView historyButton = findViewById(R.id.historyCardId);
+        sqLiteHandler = new SQLiteHandler(this);
 
 
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenOptionsMenu();
+                openPopupMenu();
             }
         });
 
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                Intent intent = new Intent(MainActivity.this, LiveActivity.class);
                 startActivity(intent);
 
             }
@@ -77,6 +84,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 openStorageIntent();
+
+            }
+        });
+
+
+
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -127,12 +146,84 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    private void openPopupMenu(){
 
-    // TODO menu main
-    public void OpenOptionsMenu(){
 
+        //Creating the instance of PopupMenu
+        PopupMenu popup = new PopupMenu(MainActivity.this, optionsImage);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.main_menu,popup.getMenu());
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()){
+
+                    case R.id.clear_menuID:
+                        ShowDeleteDialog();
+                        break;
+                    case R.id.feedback_menuID:
+                        /* Create the Intent */
+                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+                        /* Fill it with Data */
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"rahulkumarshah5000@gmail.com"});
+                        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback - Frozen OCR");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Write your feedback here...");
+
+                        /* Send it off to the Activity-Chooser */
+                        startActivity(Intent.createChooser(emailIntent, "Open gmail..."));
+                        break;
+                    case R.id.about_menuID:
+                        String url = "https://github.com/rahulshah456";
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                        break;
+                    case R.id.exit_menuID:
+                            finish();
+                        break;
+                }
+                return true;
+            }
+        });
+
+        popup.show();//showing popup menu
 
     }
+
+
+    private void ShowDeleteDialog(){
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Delete History?");
+        alertDialog.setMessage("Are you sure  you want to delete all your recognition data...");
+        alertDialog.setCancelable(true);
+        alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (sqLiteHandler.getAllRecognitions().size()>0){
+                    sqLiteHandler.deleteRecognitionData();
+                    Toast.makeText(MainActivity.this, "History Cleaned!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(MainActivity.this, "Nothing to Delete!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.d(TAG, "onClick: Cancelled Delete!");
+            }
+        });
+        alertDialog.show();
+
+    }
+
+
 
 
     private void openStorageIntent(){

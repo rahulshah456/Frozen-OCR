@@ -7,17 +7,17 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
-    <com.droid2developers.frozenocr.ocr.CameraSourcePreview
+    <com.droid2developers.frozenocr.views.CameraSourcePreview
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.droid2developers.frozenocr.ocr.GraphicOverlay
+        <com.droid2developers.frozenocr.views.GraphicOverlay
             android:id="@+id/graphicOverlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.droid2developers.frozenocr.ocr.CameraSourcePreview>
+    </com.droid2developers.frozenocr.views.CameraSourcePreview>
 
 
     <androidx.cardview.widget.CardView

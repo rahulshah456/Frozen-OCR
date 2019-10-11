@@ -3,6 +3,7 @@ package com.droid2developers.frozenocr.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.droid2developers.frozenocr.R;
+import com.droid2developers.frozenocr.controller.SQLiteHandler;
 import com.droid2developers.frozenocr.model.OCRModel;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -61,6 +63,7 @@ public class PreviewActivity extends AppCompatActivity {
             ocrModel = new OCRModel(extras.getLong("timeStamp"),extras.getString("savedURL"),
                     extras.getString("extraText"));
             saveToDatabase(ocrModel);
+            ViewCompat.setTransitionName(imageView,String.valueOf(ocrModel.getTimeStamp()));
         }
 
         init();
@@ -76,9 +79,7 @@ public class PreviewActivity extends AppCompatActivity {
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 openPopupMenu();
-
             }
         });
 
@@ -210,6 +211,8 @@ public class PreviewActivity extends AppCompatActivity {
                         break;
                     case R.id.edit_menuID:
                         editText.setEnabled(true);
+                        Toast.makeText(PreviewActivity.this, "Click on text tp edit now!",
+                                Toast.LENGTH_LONG).show();
                         break;
                     case R.id.share_menuID:
                         shareTextIntent(ocrModel.getExtaText());
@@ -254,9 +257,8 @@ public class PreviewActivity extends AppCompatActivity {
 
     //TODO
     public void saveToDatabase(OCRModel saveModel){
-
-
-
+        SQLiteHandler sqLiteHandler = new SQLiteHandler(PreviewActivity.this);
+        sqLiteHandler.addRecognition(saveModel);
     }
 
 

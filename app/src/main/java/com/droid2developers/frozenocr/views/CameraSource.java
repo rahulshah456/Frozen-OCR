@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.droid2developers.frozenocr.ocr;
+package com.droid2developers.frozenocr.views;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

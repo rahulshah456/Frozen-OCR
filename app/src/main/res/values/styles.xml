@@ -6,6 +6,31 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:alertDialogTheme">@style/alertDialog</item>
+    </style>
+
+
+    <style name="alertDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/material_dark</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/material_light</item>
+        <item name="android:textAppearanceSmall">@style/Montserrat</item>
+        <item name="android:textAppearanceMedium">@style/Montserrat</item>
+        <item name="android:textAppearanceLarge">@style/Montserrat</item>
+    </style>
+
+    <style name="Montserrat" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/material_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/material_light</item>
+        <item name="android:textAppearance">@style/Montserrat</item>
     </style>
 
 </resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/clear_menuID"
+        android:title="Clear History" />
+
+    <item
+        android:id="@+id/feedback_menuID"
+        android:title="Feedback"/>
+
+    <item
+        android:id="@+id/about_menuID"
+        android:title="About"/>
+
+    <item
+        android:id="@+id/exit_menuID"
+        android:title="Exit"/>
+
+</menu>

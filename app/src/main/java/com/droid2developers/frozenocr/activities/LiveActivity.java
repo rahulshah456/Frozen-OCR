@@ -27,11 +27,11 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.droid2developers.frozenocr.R;
-import com.droid2developers.frozenocr.ocr.CameraSource;
-import com.droid2developers.frozenocr.ocr.CameraSourcePreview;
-import com.droid2developers.frozenocr.ocr.GraphicOverlay;
-import com.droid2developers.frozenocr.ocr.OcrDetectorProcessor;
-import com.droid2developers.frozenocr.ocr.OcrGraphic;
+import com.droid2developers.frozenocr.views.CameraSource;
+import com.droid2developers.frozenocr.views.CameraSourcePreview;
+import com.droid2developers.frozenocr.views.GraphicOverlay;
+import com.droid2developers.frozenocr.views.OcrDetectorProcessor;
+import com.droid2developers.frozenocr.views.OcrGraphic;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextBlock;
@@ -40,7 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.Locale;
 
-public class CameraActivity extends AppCompatActivity {
+public class LiveActivity extends AppCompatActivity {
 
     private static final String TAG = "OcrCaptureActivity";
     // Intent request code to handle updating play services if needed.
@@ -91,7 +91,7 @@ public class CameraActivity extends AppCompatActivity {
         gestureDetector = new GestureDetector(this, new CaptureGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(graphicOverlay, "Tap to Speak. Pinch/Stretch to zoom", Snackbar.LENGTH_LONG).show();
+        ShowTip();
 
         // Set up the Text To Speech engine.
         TextToSpeech.OnInitListener listener =
@@ -115,6 +115,23 @@ public class CameraActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+    }
+
+
+    private void ShowTip(){
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(LiveActivity.this);
+        alertDialog.setTitle("Tip!");
+        alertDialog.setMessage("Tap on highlighted text to Speak. Pinch/Stretch to zoom.");
+        alertDialog.setCancelable(true);
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.d(TAG, "onClick: Cancelled Delete!");
+            }
+        });
+        alertDialog.show();
 
     }
 
