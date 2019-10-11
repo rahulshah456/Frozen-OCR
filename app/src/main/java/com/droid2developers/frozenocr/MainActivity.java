@@ -1,12 +1,17 @@
 package com.droid2developers.frozenocr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +31,9 @@ import com.droid2developers.frozenocr.controller.SQLiteHandler;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
     private String imageFilePath;
     private SQLiteHandler sqLiteHandler;
     private static final int CAPTURE_IMAGE_REQUEST = 10;
+
+    public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
+
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         CardView storageButton = findViewById(R.id.storageCardId);
         CardView historyButton = findViewById(R.id.historyCardId);
         sqLiteHandler = new SQLiteHandler(this);
+
+
+        if (!checkPermissions()){
+
+        }
 
 
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +124,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissionsList, @NonNull int[] grantResults) {
+        if (requestCode == MULTIPLE_PERMISSIONS) {
+            if (grantResults.length > 0) {
+
+                for (int grantResult : grantResults) {
+                    if (grantResult == PackageManager.PERMISSION_DENIED) {
+                        finish();
+                    }
+                }
+
+            }
+            return;
+        }
+    }
+
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -143,6 +181,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
+    }
 
 
 
